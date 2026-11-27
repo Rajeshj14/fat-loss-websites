@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-const FeatureCard = ({ image, title }) => {
+const FeatureCard = ({ image, title }: { image: string; title: string }) => {
   return (
     <div className="flex flex-col items-center justify-center text-center group cursor-pointer">
       {/* Image Container */}
