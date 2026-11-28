@@ -1,2 +1,9 @@
 node_modules/
 .next/
+.env
+.env.local
+.env.*.local
+.dev.vars
+.dev.vars.*
+.wrangler/
+.open-next/

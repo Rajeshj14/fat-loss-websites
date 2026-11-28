@@ -9,6 +9,7 @@ const ContactForm = () => {
     email: "",
     phone: "",
     message: "",
+    website: "",
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -20,19 +21,25 @@ const ContactForm = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
 
-    setIsSubmitting(false);
-    setSubmitStatus("success");
+      if (!response.ok) {
+        throw new Error("Unable to submit contact form");
+      }
 
-    setFormData({
-      name: "",
-      email: "",
-      phone: "",
-      message: "",
-    });
-
-    setTimeout(() => setSubmitStatus("idle"), 5000);
+      setSubmitStatus("success");
+      setFormData({ name: "", email: "", phone: "", message: "", website: "" });
+    } catch {
+      setSubmitStatus("error");
+    } finally {
+      setIsSubmitting(false);
+      setTimeout(() => setSubmitStatus("idle"), 5000);
+    }
   };
 
   const handleChange = (
@@ -120,10 +127,29 @@ const ContactForm = () => {
           />
         </div>
 
+        {/* Bot trap: real visitors never see or fill this field. */}
+        <div className="hidden" aria-hidden="true">
+          <label htmlFor="website">Website</label>
+          <input
+            id="website"
+            type="text"
+            name="website"
+            value={formData.website}
+            onChange={handleChange}
+            tabIndex={-1}
+            autoComplete="off"
+          />
+        </div>
+
         {/* Success Message */}
         {submitStatus === "success" && (
           <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">
-            Thank you! We'll contact you shortly.
+            Thank you! We&apos;ll contact you shortly.
+          </div>
+        )}
+        {submitStatus === "error" && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+            We couldn&apos;t send your request. Please try again or call us.
           </div>
         )}
         <button
